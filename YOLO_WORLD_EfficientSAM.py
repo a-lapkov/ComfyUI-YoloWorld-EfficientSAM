@@ -111,6 +111,8 @@ class Yoloworld_ESAM_Zho:
                 "esam_model": ("ESAMMODEL",),
                 "image": ("IMAGE",),
                 "categories": ("STRING", {"default": "person, bicycle, car, motorcycle, airplane, bus, train, truck, boat", "multiline": True}),
+                "categories_1_output": ("STRING", {"default": "", "multiline": False}),
+                "categories_2_output": ("STRING", {"default": "", "multiline": False}),
                 "confidence_threshold": ("FLOAT", {"default": 0.1, "min": 0, "max": 1, "step":0.01}),
                 "iou_threshold": ("FLOAT", {"default": 0.1, "min": 0, "max": 1, "step":0.01}),
                 "box_thickness": ("INT", {"default": 2, "min": 1, "max": 5}),
@@ -125,12 +127,16 @@ class Yoloworld_ESAM_Zho:
             }
         }
 
-    RETURN_TYPES = ("IMAGE", "MASK", )
+    RETURN_TYPES = ("IMAGE", "IMAGE", "IMAGE", "MASK",)
+    RETURN_NAMES = ("OUTPUT_1", "OUTPUT_2", "OUTPUT_3", "MASK",)
     FUNCTION = "yoloworld_esam_image"
     CATEGORY = "Magneat Suite/🔎YOLOWORLD_ESAM"
 
-    def yoloworld_esam_image(self, image, yolo_world_model, esam_model, categories, confidence_threshold, iou_threshold, box_thickness, text_thickness, text_scale, with_segmentation, mask_combined, with_confidence, with_class_agnostic_nms, mask_extracted, mask_extracted_index):
+    def yoloworld_esam_image(self, image, yolo_world_model, esam_model, categories, categories_1_output, categories_2_output, confidence_threshold, iou_threshold, box_thickness, text_thickness, text_scale, with_segmentation, mask_combined, with_confidence, with_class_agnostic_nms, mask_extracted, mask_extracted_index):
         categories = process_categories(categories)
+        categories_1_output =  process_categories(categories_1_output)
+        categories_2_output =  process_categories(categories_2_output)
+        detected_categories = []
         processed_images = []
         processed_masks = []
         for img in image:
@@ -143,6 +149,7 @@ class Yoloworld_ESAM_Zho:
                 class_agnostic=with_class_agnostic_nms,
                 threshold=iou_threshold
             )
+            detected_categories += list(detections.data['class_name'])
 
             combined_mask = None
             if with_segmentation:
@@ -188,6 +195,7 @@ class Yoloworld_ESAM_Zho:
 
             processed_images.append(output_image)
 
+
         new_ims = torch.cat(processed_images, dim=0)
 
         if processed_masks:
@@ -195,17 +203,23 @@ class Yoloworld_ESAM_Zho:
         else:
             new_masks = torch.empty(0)
 
-        return new_ims, new_masks
+        unique_detected_categories = list(set(detected_categories))
+        if unique_detected_categories == categories_1_output:
+            return (new_ims, image, image, new_masks)
+        elif unique_detected_categories == categories_2_output:
+            return (image, new_ims, image, new_masks)
+        else:
+            return (image, image, new_ims, new_masks)
 
 
 NODE_CLASS_MAPPINGS = {
-    "Yoloworld_ModelLoader_Zho": Yoloworld_ModelLoader_Zho,
-    "ESAM_ModelLoader_Zho": ESAM_ModelLoader_Zho,
-    "Yoloworld_ESAM_Zho": Yoloworld_ESAM_Zho,
+    "Magneat_Yoloworld_ModelLoader_Zho": Yoloworld_ModelLoader_Zho,
+    "Magneat_ESAM_ModelLoader_Zho": ESAM_ModelLoader_Zho,
+    "Magneat_Yoloworld_ESAM_Zho": Yoloworld_ESAM_Zho,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "Yoloworld_ModelLoader_Zho": "🔎Yoloworld Model Loader",
-    "ESAM_ModelLoader_Zho": "🔎ESAM Model Loader",
-    "Yoloworld_ESAM_Zho": "🔎Yoloworld ESAM",
+    "Magneat_Yoloworld_ModelLoader_Zho": "Magneat 🔎Yoloworld Model Loader",
+    "Magneat_ESAM_ModelLoader_Zho": "Magneat 🔎ESAM Model Loader",
+    "Magneat_Yoloworld_ESAM_Zho": "Magneat 🔎Yoloworld ESAM",
 }

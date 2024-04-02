@@ -314,9 +314,9 @@ class Yoloworld_ESAM_DetectorProvider_Zho:
 
 
 NODE_CLASS_MAPPINGS = {
-    "Yoloworld_ESAM_DetectorProvider_Zho": Yoloworld_ESAM_DetectorProvider_Zho,
+    "Magneat_Yoloworld_ESAM_DetectorProvider_Zho": Yoloworld_ESAM_DetectorProvider_Zho,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "Yoloworld_ESAM_DetectorProvider_Zho": "🔎Yoloworld ESAM Detector Provider",
+    "Magneat_Yoloworld_ESAM_DetectorProvider_Zho": "Magneat 🔎Yoloworld ESAM Detector Provider",
 }
