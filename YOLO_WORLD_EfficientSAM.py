@@ -64,13 +64,13 @@ class Yoloworld_ModelLoader_Zho:
     RETURN_TYPES = ("YOLOWORLDMODEL",)
     RETURN_NAMES = ("yolo_world_model",)
     FUNCTION = "load_yolo_world_model"
-    CATEGORY = "🔎YOLOWORLD_ESAM"
-  
+    CATEGORY = "Magnet Suite/🔎YOLOWORLD_ESAM"
+
     def load_yolo_world_model(self, yolo_world_model):
         YOLO_WORLD_MODEL = YOLOWorld(model_id=yolo_world_model)
 
         return [YOLO_WORLD_MODEL]
-        
+
 
 class ESAM_ModelLoader_Zho:
     def __init__(self):
@@ -87,14 +87,14 @@ class ESAM_ModelLoader_Zho:
     RETURN_TYPES = ("ESAMMODEL",)
     RETURN_NAMES = ("esam_model",)
     FUNCTION = "load_esam_model"
-    CATEGORY = "🔎YOLOWORLD_ESAM"
-  
+    CATEGORY = "Magnet Suite/🔎YOLOWORLD_ESAM"
+
     def load_esam_model(self, device):
         if device == "CUDA":
             model_path = os.path.join(current_directory, "efficient_sam_s_gpu.jit")
         else:
             model_path = os.path.join(current_directory, "efficient_sam_s_cpu.jit")
-            
+
         EFFICIENT_SAM_MODEL = torch.jit.load(model_path)
 
         return [EFFICIENT_SAM_MODEL]
@@ -127,14 +127,14 @@ class Yoloworld_ESAM_Zho:
 
     RETURN_TYPES = ("IMAGE", "MASK", )
     FUNCTION = "yoloworld_esam_image"
-    CATEGORY = "YOLOWORLD_ESAM"
-                       
+    CATEGORY = "Magnet Suite/🔎YOLOWORLD_ESAM"
+
     def yoloworld_esam_image(self, image, yolo_world_model, esam_model, categories, confidence_threshold, iou_threshold, box_thickness, text_thickness, text_scale, with_segmentation, mask_combined, with_confidence, with_class_agnostic_nms, mask_extracted, mask_extracted_index):
         categories = process_categories(categories)
         processed_images = []
         processed_masks = []
         for img in image:
-            img = np.clip(255. * img.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)          
+            img = np.clip(255. * img.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)
             YOLO_WORLD_MODEL = yolo_world_model
             YOLO_WORLD_MODEL.set_classes(categories)
             results = YOLO_WORLD_MODEL.infer(img, confidence=confidence_threshold)
@@ -158,21 +158,21 @@ class Yoloworld_ESAM_Zho:
                     for mask in det_mask:
                         combined_mask = np.logical_or(combined_mask, mask).astype(np.uint8)
                     masks_tensor = torch.tensor(combined_mask, dtype=torch.float32)
-                    processed_masks.append(masks_tensor) 
+                    processed_masks.append(masks_tensor)
                 else:
                     det_mask = detections.mask
-                    
+
                     if mask_extracted:
                         mask_index = mask_extracted_index
                         selected_mask = det_mask[mask_index]
                         masks_tensor = torch.tensor(selected_mask, dtype=torch.float32)
                     else:
                         masks_tensor = torch.tensor(det_mask, dtype=torch.float32)
-                        
-                    processed_masks.append(masks_tensor)  
-                
+
+                    processed_masks.append(masks_tensor)
+
             output_image = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-            
+
             output_image = annotate_image(
                 input_image=output_image,
                 detections=detections,
@@ -182,14 +182,14 @@ class Yoloworld_ESAM_Zho:
                 text_thickness=text_thickness,
                 text_scale=text_scale,
             )
-            
+
             output_image = cv2.cvtColor(output_image, cv2.COLOR_BGR2RGB)
             output_image = torch.from_numpy(output_image.astype(np.float32) / 255.0).unsqueeze(0)
-            
+
             processed_images.append(output_image)
 
         new_ims = torch.cat(processed_images, dim=0)
-        
+
         if processed_masks:
             new_masks = torch.stack(processed_masks, dim=0)
         else:

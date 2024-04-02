@@ -1,1 +1,1 @@
-inference-gpu[yolo-world]==0.9.13
+git+https://github.com/a-lapkov/inference.git # inference-gpu[yolo-world]==0.9.13
