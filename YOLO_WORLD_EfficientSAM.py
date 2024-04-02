@@ -64,7 +64,7 @@ class Yoloworld_ModelLoader_Zho:
     RETURN_TYPES = ("YOLOWORLDMODEL",)
     RETURN_NAMES = ("yolo_world_model",)
     FUNCTION = "load_yolo_world_model"
-    CATEGORY = "Magnet Suite/🔎YOLOWORLD_ESAM"
+    CATEGORY = "Magneat Suite/🔎YOLOWORLD_ESAM"
 
     def load_yolo_world_model(self, yolo_world_model):
         YOLO_WORLD_MODEL = YOLOWorld(model_id=yolo_world_model)
@@ -87,7 +87,7 @@ class ESAM_ModelLoader_Zho:
     RETURN_TYPES = ("ESAMMODEL",)
     RETURN_NAMES = ("esam_model",)
     FUNCTION = "load_esam_model"
-    CATEGORY = "Magnet Suite/🔎YOLOWORLD_ESAM"
+    CATEGORY = "Magneat Suite/🔎YOLOWORLD_ESAM"
 
     def load_esam_model(self, device):
         if device == "CUDA":
@@ -127,7 +127,7 @@ class Yoloworld_ESAM_Zho:
 
     RETURN_TYPES = ("IMAGE", "MASK", )
     FUNCTION = "yoloworld_esam_image"
-    CATEGORY = "Magnet Suite/🔎YOLOWORLD_ESAM"
+    CATEGORY = "Magneat Suite/🔎YOLOWORLD_ESAM"
 
     def yoloworld_esam_image(self, image, yolo_world_model, esam_model, categories, confidence_threshold, iou_threshold, box_thickness, text_thickness, text_scale, with_segmentation, mask_combined, with_confidence, with_class_agnostic_nms, mask_extracted, mask_extracted_index):
         categories = process_categories(categories)
