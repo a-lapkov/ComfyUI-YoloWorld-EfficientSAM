@@ -134,8 +134,8 @@ class Yoloworld_ESAM_Zho:
 
     def yoloworld_esam_image(self, image, yolo_world_model, esam_model, categories, categories_1_output, categories_2_output, confidence_threshold, iou_threshold, box_thickness, text_thickness, text_scale, with_segmentation, mask_combined, with_confidence, with_class_agnostic_nms, mask_extracted, mask_extracted_index):
         categories = process_categories(categories)
-        categories_1_output =  process_categories(categories_1_output)
-        categories_2_output =  process_categories(categories_2_output)
+        categories_1_output =  process_categories(categories_1_output).sort()
+        categories_2_output =  process_categories(categories_2_output).sort()
         detected_categories = []
         processed_images = []
         processed_masks = []
@@ -203,7 +203,7 @@ class Yoloworld_ESAM_Zho:
         else:
             new_masks = torch.empty(0)
 
-        unique_detected_categories = list(set(detected_categories))
+        unique_detected_categories = list(set(detected_categories)).sort()
         if unique_detected_categories == categories_1_output:
             return (new_ims, image, image, new_masks)
         elif unique_detected_categories == categories_2_output:
