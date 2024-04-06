@@ -2,9 +2,11 @@ from .YOLO_WORLD_EfficientSAM import *
 from collections import namedtuple
 from PIL import Image
 
-SEG = namedtuple("SEG",
-                 ['cropped_image', 'cropped_mask', 'confidence', 'crop_region', 'bbox', 'label', 'control_net_wrapper'],
-                 defaults=[None])
+SEG = namedtuple(
+    typename="SEG",
+    field_names=['cropped_image', 'cropped_mask', 'confidence', 'crop_region', 'bbox', 'label', 'control_net_wrapper'],
+    defaults=[None]
+)
 
 
 def crop_ndarray4(npimg, crop_region):
